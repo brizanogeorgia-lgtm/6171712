@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ka">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ელენერგო — აბონენტები</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="container">
+    <h1>ელენერგო — აბონენტების მართვა</h1>
+    <p class="sub">რეგისტრაცია • ძებნა • სტატუსები • დაზიანებები</p>
+  </header>
+
+  <main class="container grid-2">
+    <!-- რეგისტრაცია -->
+    <section class="card">
+      <h2>ახალი აბონენტის რეგისტრაცია</h2>
+      <form id="registerForm" autocomplete="off">
+        <div class="grid-2">
+          <label>სახელი
+            <input name="firstName" required />
+          </label>
+          <label>გვარი
+            <input name="lastName" required />
+          </label>
+          <label>პირადი ნომერი
+            <input name="personalId" inputmode="numeric" maxlength="11" required />
+          </label>
+          <label>მობილურის ნომერი
+            <input name="phone" inputmode="tel" required />
+          </label>
+        </div>
+        <label>მისამართი
+          <input name="address" placeholder="მაგ: სოფელი ძვევიჯვარი, ქ. N, ბ. X" required />
+        </label>
+        <button class="btn" type="submit">რეგისტრაცია</button>
+        <p id="newSubNumber" class="muted"></p>
+      </form>
+    </section>
+
+    <!-- ძებნა & შედეგი -->
+    <section class="card">
+      <h2>ძებნა აბონენტის ნომრით</h2>
+      <form id="searchForm" class="row">
+        <input id="searchInput" placeholder="მაგ: SUB-20250824-1234" />
+        <button class="btn" type="submit">ძებნა</button>
+        <button class="btn btn-ghost" type="button" id="clearSearch">გასუფთავება</button>
+      </form>
+
+      <div id="result" class="result hidden">
+        <div class="result-header">
+          <h3>აბონენტის ბარათი</h3>
+          <span id="powerBadge" class="badge">ჩართულია</span>
+        </div>
+        <div class="kv">
+          <div><span>აბონენტის №</span><strong id="rSubNo">—</strong></div>
+          <div><span>სახელი</span><strong id="rFullName">—</strong></div>
+          <div><span>პირადი №</span><strong id="rPid">—</strong></div>
+          <div><span>მობილური</span><strong id="rPhone">—</strong></div>
+          <div class="wide"><span>მისამართი</span><strong id="rAddress">—</strong></div>
+          <div class="wide"><span>დაზიანება</span><strong id="rDamage">არაფერია დაფიქსირებული</strong></div>
+        </div>
+
+        <div class="row wrap">
+          <button class="btn" id="togglePower">ჩართვა/გამორთვა</button>
+          <button class="btn" id="editBtn">რედაქტირება</button>
+          <button class="btn btn-warn" id="clearDamage">დაზიანების გასუფთავება</button>
+          <button class="btn btn-danger" id="deleteBtn">აბონენტის წაშლა</button>
+        </div>
+
+        <!-- რედაქტირება -->
+        <form id="editForm" class="edit hidden">
+          <div class="grid-2">
+            <label>სახელი
+              <input name="firstName" />
+            </label>
+            <label>გვარი
+              <input name="lastName" />
+            </label>
+            <label>პირადი ნომერი
+              <input name="personalId" maxlength="11" />
+            </label>
+            <label>მობილური
+              <input name="phone" />
+            </label>
+          </div>
+          <label>მისამართი
+            <input name="address" />
+          </label>
+          <div class="row">
+            <button class="btn" type="submit">შენახვა</button>
+            <button class="btn btn-ghost" type="button" id="cancelEdit">გაუქმება</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- მასობრივი დაზიანება მისამართით -->
+    <section class="card">
+      <h2>დაზიანების დაფიქსირება — მისამართით</h2>
+      <form id="damageForm">
+        <label>მისამართი/დასახლება (ზუსტი დამთხვევა)
+          <input name="damageAddress" placeholder="მაგ: სოფელი ძვევიჯვარი" required />
+        </label>
+        <label>დაზიანების აღწერა
+          <textarea name="damageText" rows="3" placeholder="მაგ: მაღალი ძაბვის ხაზი დაზიანებულია"></textarea>
+        </label>
+        <button class="btn" type="submit">ყველა მისამართზე დაზიანების მინიჭება</button>
+        <p id="damageResult" class="muted"></p>
+      </form>
+    </section>
+
+    <!-- აბონენტების სია (ഐჩ्छಿಕ) -->
+    <section class="card">
+      <h2>აბონენტების სია</h2>
+      <div class="row">
+        <input id="filterAddress" placeholder="ფილტრი მისამართით…" />
+        <button class="btn btn-ghost" id="refreshList" type="button">განახლება</button>
+      </div>
+      <div class="table-wrap">
+        <table id="subsTable">
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>სახელი/გვარი</th>
+              <th>მისამართი</th>
+              <th>სტატუსი</th>
+              <th>დაზიანება</th>
+            </tr>
+          </thead>
+          <tbody><!-- rows injected --></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container muted center">
+    <small>LocalStorage-ზე დაფუძნებული დემო. მონაცემები ინახება მხოლოდ თქვენს ბრაუზერში.</small>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
